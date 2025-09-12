@@ -12,6 +12,19 @@ const transferService = require ('../../rest-api-app/rest-api-app/src/services/t
 // Testes
 describe('Transfer Controller', () => {
     describe('POST /api/transfer', () => {
+        let processTransferStub;
+        beforeEach(() => {
+            processTransferStub = sinon.stub(transferService, 'processTransfer').returns({
+                id: 1,
+                senderId: 1,
+                recipientId: 2,
+                amount: 100,
+                date: new Date()
+            });
+        });
+        afterEach(() => {
+            processTransferStub.restore();
+        });
         it('Quando uso dados válidos o retorno será 200', async () => {
             // Primeiro, registre dois usuários
             await request(app)
