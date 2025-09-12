@@ -7,7 +7,7 @@ const { expect } = require ('chai');
 // Aplicação 
 const app = require('../../rest-api-app/rest-api-app/src/app');
 
-//Moch 
+//Mock 
 const transferService = require ('../../rest-api-app/rest-api-app/src/services/transferService')
 // Testes
 describe('Transfer Controller', () => {
@@ -48,7 +48,19 @@ describe('Transfer Controller', () => {
         });
     });
 
+    it('Quando informo remetente e destinatário inexistente recebo 400', async () => {
+        // Simula erro no service
+        const stub = sinon.stub(transferService, 'processTransfer').returns({ error: 'Sender or recipient not found.' });
+        const resposta = await request(app)
+            .post('/api/transfer')
+            .send({ senderId: 2, recipientId: 0, amount: 100 });
+        expect(resposta.status).to.equal(400);
+        expect(resposta.body).to.have.property('error', 'Sender or recipient not found.');
+        stub.restore();
+    });
+
     describe ('GET/ transfer', () => {
         //its ficam aqui 
     });
+
 });
